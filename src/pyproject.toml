@@ -5,7 +5,7 @@ description = ""
 authors = ["Ricardo Cataldi <rcataldi@microsoft.com>", "Katie "]
 readme = "README.md"
 packages = [
-    {include = "image-analysis", from = "."},
+    {include = "image_analysis", from = "."},
     {include = "image-improvement", from = "."}
 ]
 
@@ -22,9 +22,10 @@ pillow = "^11.1.0"
 cognitive-face = "^1.5.0"
 azure-ai-vision-imageanalysis = "^1.0.0"
 opencv-python = "^4.11.0.86"
-azure-ai-projects = "^1.0.0"
+azure-ai-projects = {version = "^1.1.0b3", allow-prereleases = true}
 openai = "^1.99.9"
 azure-ai-inference = "^1.0.0b9"
+azure-ai-agents = {version = "^1.2.0b3", allow-prereleases = true}
 
 
 [tool.poetry.group.dev.dependencies]
