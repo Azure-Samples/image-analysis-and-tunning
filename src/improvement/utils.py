@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import base64
+import io
 import json
 import logging
 import mimetypes
@@ -10,7 +11,7 @@ import pathlib
 import sys
 import tempfile
 import threading
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Tuple, Literal, cast
 
 from fastapi import HTTPException, UploadFile
 
@@ -296,9 +297,18 @@ class ImprovementHook(metaclass=_SingletonMeta):
             "Genera un texto de edición breve y accionable para pasar al modelo gpt-image-1 (endpoint de edits)."
         )
 
-        assert self.DefaultAzureCredential is not None
-        assert self.AIProjectClient is not None
-        assert self.MessageInputTextBlock is not None
+        missing: List[str] = []
+        if self.DefaultAzureCredential is None:
+            missing.append("DefaultAzureCredential")
+        if self.AIProjectClient is None:
+            missing.append("AIProjectClient")
+        if self.MessageInputTextBlock is None:
+            missing.append("MessageInputTextBlock")
+        if missing:
+            raise RuntimeError(
+                "Azure AI SDK components are required for agent planning: "
+                + ", ".join(missing)
+            )
 
         async with self.DefaultAzureCredential() as credential:  # type: ignore[call-arg]
             async with self.AIProjectClient(credential=credential, endpoint=project_endpoint) as client:  # type: ignore[call-arg]
@@ -347,7 +357,7 @@ class ImprovementHook(metaclass=_SingletonMeta):
         deployment = os.getenv("IMAGE_DEPLOYMENT_NAME")
         if not deployment:
             raise RuntimeError("IMAGE_DEPLOYMENT_NAME is required.")
-        api_ver = api_version or "2024-12-01-preview"
+        api_ver = api_version or "2025-04-01-preview"
         return endpoint, deployment, api_ver
 
     async def images_edits_via_project_async(
@@ -358,98 +368,66 @@ class ImprovementHook(metaclass=_SingletonMeta):
         prompt: str,
         *,
         size: str = "1024x1024",
+        api_version: Optional[str] = None,
     ) -> bytes:
-        if not (
-            self.AIProjectClient
-            and self.DefaultAzureCredential
-            and self.MessageInputImageFileBlock
-            and self.MessageImageFileParam
-            and self.MessageInputTextBlock
-        ):
-            raise RuntimeError(
-                "azure-ai-projects and azure-ai-agents packages are required for agent-based image edits."
-            )
+        if self.DefaultAzureCredential is None or self.AIProjectClient is None:
+            raise RuntimeError("Azure credentials or AI Project client are not available.")
 
-        if requests is None:
-            raise RuntimeError("The 'requests' package is required to download generated images.")
+        api_version = api_version or "2025-04-01-preview"
 
-        assert self.DefaultAzureCredential is not None
-        assert self.AIProjectClient is not None
-        assert self.MessageInputImageFileBlock is not None
-        assert self.MessageImageFileParam is not None
-        assert self.MessageInputTextBlock is not None
+        try:
+            from openai import AsyncAzureOpenAI  # noqa: F401  # pylint: disable=unused-import
+        except Exception as exc:  # pragma: no cover - import failure is rare but fatal
+            raise RuntimeError("The 'openai' package is required for image edits.") from exc
+
+        image_input = image_path.read_bytes()
+        image_buffer = io.BytesIO(image_input)
+        image_buffer.name = image_path.name
+        image_buffer.seek(0)
+
+        size_literal = cast(Literal["256x256", "512x512", "1024x1024"], size)
 
         async with self.DefaultAzureCredential() as credential:  # type: ignore[call-arg]
             async with self.AIProjectClient(credential=credential, endpoint=project_endpoint) as client:  # type: ignore[call-arg]
-                agents = client.agents
-                agent = await agents.create_agent(
+                openai_client = await client.get_openai_client(api_version=api_version)
+                response = await openai_client.images.edit(
                     model=deployment,
-                    name="image-editor-agent",
-                    instructions=(
-                        "Eres un asistente de edición de imágenes. Aplica las instrucciones de edición manteniendo la identidad y "
-                        "devuelve la imagen final en la respuesta. No devuelvas explicaciones."
-                    ),
+                    image=image_buffer,
+                    prompt=prompt,
+                    size=size_literal,
+                    n=1,
                 )
-                source_file_id: Optional[str] = None
-                try:
-                    thread = await agents.threads.create()
-                    source_file = await agents.files.upload_and_poll(
-                        file_path=str(image_path), purpose="assistants"
-                    )
-                    source_file_id = source_file.id
-                    file_param = self.MessageImageFileParam(file_id=source_file.id, detail="high")
 
-                    user_text = (
-                        f"Instrucciones de edición: {prompt}\n"
-                        f"Tamaño de salida preferido: {size}."
-                    )
+        data = getattr(response, "data", None)
+        if not data:
+            raise RuntimeError("Image edit response did not include any data")
 
-                    await agents.messages.create(  # type: ignore[attr-defined]
-                        role="user",
-                        thread_id=thread.id,
-                        content=[
-                            self.MessageInputTextBlock(text=user_text),
-                            self.MessageInputImageFileBlock(image_file=file_param),
-                        ],
-                    )
+        first = data[0]
+        encoded: Optional[str] = None
+        url: Optional[str] = None
 
-                    await agents.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+        if hasattr(first, "b64_json"):
+            encoded = getattr(first, "b64_json")
+        elif isinstance(first, dict):
+            encoded = first.get("b64_json")
 
-                    async for msg in agents.messages.list(thread_id=thread.id):
-                        role_value = str(getattr(msg, "role", "")).lower()
-                        if "agent" not in role_value or not msg.content:
-                            continue
-                        for block in msg.content:
-                            if isinstance(block, dict):
-                                if "image" in block and isinstance(block["image"], dict):
-                                    image_data = block["image"]
-                                    encoded = image_data.get("b64_json") or image_data.get("data")
-                                    if encoded:
-                                        return base64.b64decode(encoded)
-                                    img_url = image_data.get("url")
-                                    if img_url:
-                                        resp = requests.get(img_url, timeout=180)
-                                        resp.raise_for_status()
-                                        return resp.content
-                                if "image_file" in block and isinstance(block["image_file"], dict):
-                                    file_id = block["image_file"].get("file_id")
-                                    if file_id:
-                                        file_content = await agents.files.download(file_id=file_id)  # type: ignore[attr-defined]
-                                        if hasattr(file_content, "read"):
-                                            return file_content.read()
-                                        if isinstance(file_content, (bytes, bytearray)):
-                                            return bytes(file_content)
-                    raise RuntimeError("Agent did not return an edited image")
-                finally:
-                    try:
-                        await agents.delete_agent(agent.id)
-                    except Exception:  # pragma: no cover
-                        pass
-                    if source_file_id:
-                        try:
-                            await agents.files.delete(file_id=source_file_id)
-                        except Exception:  # pragma: no cover
-                            pass
+        if not encoded:
+            if hasattr(first, "url"):
+                url = getattr(first, "url")
+            elif isinstance(first, dict):
+                url = first.get("url")
+
+        if encoded:
+            return base64.b64decode(encoded)
+
+        if url:
+            if requests is None:
+                raise RuntimeError("The 'requests' package is required to download generated images.")
+            resp = requests.get(url, timeout=180)
+            resp.raise_for_status()
+            return resp.content
+
+        raise RuntimeError("Image edit response did not include image bytes")
 
     def split_fix_candidates(self, prompt: str) -> List[str]:
         return [segment.strip() for segment in prompt.split(";") if segment.strip()]

@@ -41,7 +41,7 @@ class ImageImprovementResult(BaseModel):
 
     filename: str = Field(..., description="Filename associated with the improved image")
     content_type: str = Field(..., description="MIME type of the improved image")
-    image_bytes: bytes = Field(..., description="Raw image bytes (base64-encoded in JSON)")
+    image_b64: str = Field(..., description="Improved image encoded as base64 string")
     prompt: str = Field(..., description="Prompt that guided the edit")
     applied_fixes: List[str] = Field(
         default_factory=list,

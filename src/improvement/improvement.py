@@ -8,8 +8,11 @@ import asyncio
 import json
 import os
 import sys
+from base64 import b64encode, b64decode
 from pathlib import Path
 from typing import Dict, List
+
+from dotenv import load_dotenv
 
 from .schemas import ImageImprovementJob, ImageImprovementResponse, ImageImprovementResult
 from .utils import get_improvement_hook
@@ -20,6 +23,8 @@ SRC_DIR = Path(__file__).resolve().parents[1]
 
 ASSETS_DIR = SRC_DIR / "analysis" / ".assets"
 IMPROVED_DIR = ASSETS_DIR / "improved"
+
+load_dotenv()
 
 HOOK = get_improvement_hook()
 
@@ -36,7 +41,7 @@ async def improve_image(job: ImageImprovementJob) -> ImageImprovementResponse:
         )
 
     try:
-        project_endpoint, deployment, _ = HOOK.ensure_project_and_deployment(
+        project_endpoint, deployment, api_version = HOOK.ensure_project_and_deployment(
             job.project_endpoint, job.api_version
         )
         prompt, fixes = await HOOK.resolve_prompt(job, project_endpoint, image_path.name)
@@ -46,16 +51,19 @@ async def improve_image(job: ImageImprovementJob) -> ImageImprovementResponse:
             image_path,
             prompt,
             size=job.size,
+            api_version=api_version,
         )
+        image_b64 = b64encode(image_bytes).decode("ascii")
         result = ImageImprovementResult(
             filename=image_path.name,
             content_type=HOOK.guess_mime(image_path),
-            image_bytes=image_bytes,
+            image_b64=image_b64,
             prompt=prompt,
             applied_fixes=fixes,
         )
         return ImageImprovementResponse(success=True, result=result)
     except Exception as exc:
+        HOOK.logger.exception("Error improving image %s: %s", image_path, exc)
         return ImageImprovementResponse(
             success=False,
             error=str(exc),
@@ -96,7 +104,7 @@ async def _run_cli_job(args: argparse.Namespace) -> int:
         response = await improve_image(job)
         if response.success and response.result:
             out_path = IMPROVED_DIR / image_path.name
-            out_path.write_bytes(response.result.image_bytes)
+            out_path.write_bytes(b64decode(response.result.image_b64))
             print(
                 f"Improved: {image_path.name} -> {out_path.name} | Fixes: {', '.join(response.result.applied_fixes)}"
             )
