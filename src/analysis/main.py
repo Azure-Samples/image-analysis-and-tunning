@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .analysis import evaluate_image
 from .api_models import ErrorResponse, HealthResponse
 from .schemas import ImageEvaluationRequest, ImageEvaluationResponse
+from .preprocessing import preprocess_image
 from .utils import get_analysis_hook
 
 APP_DESCRIPTION = (
@@ -85,8 +86,31 @@ async def evaluate_endpoint(
         )
 
     temp_path = await HOOK.persist_upload_temporarily(image)
+    processed_path = temp_path
+
+    try:
+        processed_path = preprocess_image(temp_path)
+    except FileNotFoundError as exc:
+        HOOK.cleanup_temp_file(temp_path)
+        raise HOOK.build_error_exception(
+            400,
+            code="invalid_image",
+            message="La imagen cargada no se pudo procesar",
+            details=str(exc),
+            action="Verifica que el archivo sea una fotografía válida e inténtalo de nuevo",
+        ) from exc
+    except Exception as exc:  # pragma: no cover - defensive safety net
+        HOOK.cleanup_temp_file(temp_path)
+        raise HOOK.build_error_exception(
+            500,
+            code="preprocessing_failed",
+            message="Ocurrió un error al preparar la imagen para la evaluación",
+            details=str(exc),
+            action="Reintenta con una imagen distinta o revisa los registros del servicio",
+        ) from exc
+
     request = ImageEvaluationRequest(
-        image_path=temp_path,
+        image_path=processed_path,
         prompt=prompt,
         model_deployment_name=model_deployment_name,
         project_endpoint=project_endpoint,
@@ -96,9 +120,13 @@ async def evaluate_endpoint(
         response = await evaluate_image(request)
     except HTTPException:
         HOOK.cleanup_temp_file(temp_path)
+        if processed_path and processed_path != temp_path:
+            HOOK.cleanup_temp_file(processed_path)
         raise
     except Exception as exc:  # pragma: no cover - defensive safety net
         HOOK.cleanup_temp_file(temp_path)
+        if processed_path and processed_path != temp_path:
+            HOOK.cleanup_temp_file(processed_path)
         raise HOOK.build_error_exception(
             500,
             code="evaluation_unexpected_error",
@@ -108,6 +136,8 @@ async def evaluate_endpoint(
         ) from exc
 
     HOOK.cleanup_temp_file(temp_path)
+    if processed_path and processed_path != temp_path:
+        HOOK.cleanup_temp_file(processed_path)
 
     if not response.success:
         raise HOOK.build_error_exception(

@@ -3,14 +3,17 @@
 Evaluates a document-style photo using an Azure AI Agents (Foundry) model and returns a structured rubric result: overall score, per‑criteria scores, safety flag, and Spanish notes.
 
 ## Responsibilities
+
 - Accept multipart image + prompt (or default rubric prompt).
 - Create/reuse an agent with deterministic instructions (rubric in Spanish).
 - Upload image as assistant file.
+- Remove background noise, normalize to formato 3x4 y exportar a JPEG antes de la evaluación.
 - Run the agent and parse strict JSON response.
 - Return `ImageEvaluationResponse` envelope.
 - (Optional) Persist `evaluations.json` locally for batch CLI runs.
 
 ## Key Modules
+
 | File | Purpose |
 |------|---------|
 | `analysis.py` | Core async evaluation logic & agent orchestration. |
@@ -18,8 +21,10 @@ Evaluates a document-style photo using an Azure AI Agents (Foundry) model and re
 | `schemas.py` | Pydantic request/response models. |
 | `utils.py` | Helper utilities (file type checks, image heuristics, safe guards). |
 | `api_models.py` | Shared API error/health models. |
+| `preprocessing.py` | Background removal + 3x4 normalization before scoring. |
 
 ## Sequence (Evaluation Flow)
+
 ```mermaid
 sequenceDiagram
   participant U as User (Browser)
@@ -38,6 +43,7 @@ sequenceDiagram
 ```
 
 ## Use Case Diagram
+
 ```mermaid
 graph TD
   User -->|Submit Image| AnalysisAPI[Analysis API]
@@ -47,6 +53,7 @@ graph TD
 ```
 
 ## Environment Variables
+
 | Variable | Usage |
 |----------|-------|
 | `PROJECT_ENDPOINT` | Azure AI Foundry project endpoint |
@@ -56,8 +63,11 @@ graph TD
 | `AGENT_NAME` | Name when creating a new agent |
 
 ## API Contract (Simplified)
-Request: `multipart/form-data` fields: `image` (binary), `prompt` (string – optional).  
+
+Request: `multipart/form-data` fields: `image` (binary), `prompt` (string – optional).
+
 Response (200):
+
 ```json
 {
   "success": true,
@@ -73,10 +83,12 @@ Response (200):
 ```
 
 ## Error Handling
+
 - Returns `success=false` with `error` message OR HTTP error envelope (400/502) via shared `ErrorResponse`.
 - Defensive JSON parse: if agent deviates, returns invalid JSON error.
 
 ## Extensibility Ideas
+
 | Idea | Description |
 |------|-------------|
 | Add rate limiting | Protect service from abuse. |
@@ -85,13 +97,17 @@ Response (200):
 | Persistence layer | Store results in Cosmos DB / Table. |
 
 ## Local CLI Batch
+
 Run `python -m analysis.analysis --assets-dir <dir>` to evaluate all images in a folder; outputs `evaluations.json`.
 
 ## Security Notes
+
 - Utilizes `DefaultAzureCredential`; recommend Managed Identity in Azure.
 - Validate file type & size (extend `utils.py` if adding formats).
 
 ## Testing Targets
+
 - JSON parsing robustness.
 - Criteria score normalization.
 - Error envelopes (400 invalid prompt / missing image).
+ 
