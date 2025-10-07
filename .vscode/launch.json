@@ -2,10 +2,67 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Python File",
+            "name": "Backend: Analysis (FastAPI)",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}"
+            "module": "uvicorn",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "analysis.main:app",
+                "--reload",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8000",
+                "--app-dir",
+                "src"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}\\src"
+            },
+            "envFile": "${workspaceFolder}\\src\\.env",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "Backend: Improvement (FastAPI)",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "uvicorn",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "improvement.main:app",
+                "--reload",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8001",
+                "--app-dir",
+                "src"
+            ],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}\\src"
+            },
+            "envFile": "${workspaceFolder}\\src\\.env",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+        {
+            "name": "Frontend: Next.js Dev Server",
+            "type": "node-terminal",
+            "request": "launch",
+            "cwd": "${workspaceFolder}\\src\\interface",
+            "command": "yarn dev"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Launch Full Stack",
+            "configurations": [
+                "Backend: Analysis (FastAPI)",
+                "Backend: Improvement (FastAPI)",
+                "Frontend: Next.js Dev Server"
+            ]
         }
     ]
 }

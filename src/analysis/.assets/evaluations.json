@@ -1,0 +1,562 @@
+[
+  {
+    "filename": "00116546972.jpg",
+    "success": true,
+    "overall_score": 25,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "tamaño_3x4: cumple, la proporción corresponde aproximadamente a 3:4.\nfondo_blanco: incumple, el fondo es exterior con árboles y montañas, no es blanco ni uniforme.\nmirada_frontal_rostro_homogeneo: incumple, el rostro está difuminado y no se puede confirmar mirada frontal ni iluminación homogénea.\nsin_dientes_visibles: incumple, la boca no es visible por el difuminado, no se puede verificar que no haya dientes expuestos.\nidentificable_sin_obstrucciones: incumple, el rostro está intencionalmente difuminado lo que impide la identificación."
+  },
+  {
+    "filename": "001234743487.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "tamaño_3x4: La proporción de la imagen no es 3:4 (ancho/alto ≈ 0.96), fuera de la tolerancia.\nfondo_blanco: El fondo es un entorno exterior con columnas y cielo, no es blanco ni uniforme.\nmirada_frontal_rostro_homogeneo: El rostro está difuminado y la iluminación no es homogénea; no se puede confirmar mirada frontal ni detalles faciales.\nsin_dientes_visibles: La boca está ocultada por el difuminado, no es posible verificar que no se muestren dientes.\nidentificable_sin_obstrucciones: El rostro está intencionalmente difuminado (obstrucción), por lo que la persona no es identificable."
+  },
+  {
+    "filename": "001576608349K.jpg",
+    "success": true,
+    "overall_score": 26,
+    "criteria_scores": {
+      "tamaño_3x4": 20,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 6,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "tamaño_3x4: La proporción aproximada de la imagen (~0.71 ancho/alto) está fuera del ±5% permitido para 3:4.\nfondo_blanco: El fondo no es blanco ni uniforme; se observan edificaciones y cielo.\nmirada_frontal_rostro_homogeneo: El rostro está desenfocado (no totalmente visible) lo que impide confirmar mirada frontal e iluminación homogénea.\nsin_dientes_visibles: La zona de la boca está difuminada, no se puede verificar que no haya dientes visibles.\nidentificable_sin_obstrucciones: Hay un desenfoque/filtro que cubre el rostro; esto impide la identificación y los filtros/obstrucciones no son aceptables."
+  },
+  {
+    "filename": "00176147285.jpg",
+    "success": true,
+    "overall_score": 25,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 25,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "tamaño_3x4: proporción incorrecta (ancho≈720 × alto≈478 → ≈1.50 en vez de ≈0.75), fuera de la tolerancia ±5%.\nmirada_frontal_rostro_homogeneo: el rostro está fuertemente difuminado y no se puede verificar mirada frontal ni iluminación homogénea.\nsin_dientes_visibles: la boca no es visible por el difuminado, no se puede confirmar que no haya dientes expuestos.\nidentificable_sin_obstrucciones: el rostro está obstruido/borroneado, lo que impide la identificación."
+  },
+  {
+    "filename": "001771673779.jpg",
+    "success": true,
+    "overall_score": 50,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 25,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "mirada_frontal_rostro_homogeneo: No se puede verificar la mirada frontal ni la visibilidad completa del rostro porque la cara está difuminada/pixelada, ocultando rasgos y detalles.\nsin_dientes_visibles: Imposible comprobar ausencia de dientes; el difuminado cubre la boca.\nidentificable_sin_obstrucciones: El rostro está deliberadamente difuminado, lo que impide la identificación y constituye una obstrucción.\nLos demás criterios (tamaño_3x4 y fondo_blanco) cumplen con los requisitos."
+  },
+  {
+    "filename": "00187146262.jpg",
+    "success": true,
+    "overall_score": 49,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 24,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "mirada_frontal_rostro_homogeneo: incumplida — el rostro está difuminado u oculto, no es posible verificar mirada, posición ni iluminación homogénea.\nsin_dientes_visibles: incumplida — la boca no es visible por el difuminado, no se puede confirmar que los labios estén cerrados.\nidentificable_sin_obstrucciones: incumplida — el rostro está obstruido/difuminado, lo que impide la identificación. El tamaño y fondo son aceptables."
+  },
+  {
+    "filename": "00231100599.jpg",
+    "success": true,
+    "overall_score": 50,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 25,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "mirada_frontal_rostro_homogeneo: No se puede verificar la mirada frontal ni la iluminación homogénea porque el rostro está difuminado y los ojos no son visibles.\nsin_dientes_visibles: No es posible confirmar que los labios estén relajados y cerrados debido al difuminado que cubre la boca.\nidentificable_sin_obstrucciones: El rostro está obstruido por un área difuminada grande, impidiendo la identificación (obstrucción directa)."
+  },
+  {
+    "filename": "0041128019.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "No se puede puntuar: el rostro está difuminado/oculto, impidiendo evaluar mirada, expresión y si hay obstrucciones; por tanto no es posible aplicar el rúbrico."
+  },
+  {
+    "filename": "00434114717K.jpg",
+    "success": true,
+    "overall_score": 35,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 25,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 10,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "Reglas NO respetadas:\n- tamaño_3x4: la proporción ancho:alto de la imagen (~0.67) difiere más del ±5% permitido respecto a 3:4 (0.75).\n- mirada_frontal_rostro_homogeneo: el rostro está cubierto por un bloque difuminado/obstrucción, por lo que no está totalmente visible y no se puede verificar la mirada ni la iluminación.\n- identificable_sin_obstrucciones: hay un filtro/obstrucción que oculta el rostro, impidiendo la identificación (filtro no permitido)."
+  },
+  {
+    "filename": "00671146211.jpg",
+    "success": true,
+    "overall_score": 25,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "fondo_blanco: incumple — el fondo es verde y con textura (exterior con hojas), no es blanco ni uniforme.\nmirada_frontal_rostro_homogeneo: incumple — el rostro está intencionalmente difuminado/oculto, no se puede verificar mirada frontal ni iluminación homogénea.\nsin_dientes_visibles: incumple — la boca no es visible debido al difuminado, no es posible confirmar que no haya dientes visibles.\nidentificable_sin_obstrucciones: incumple — el rostro está obstruido por un difuminado que impide la identificación."
+  },
+  {
+    "filename": "01101166735.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "No es posible puntuar correctamente: el rostro está difuminado/oculto, lo que impide evaluar la mirada, visibilidad del rostro y si hay dientes visibles. Además el fondo es gris y la proporción de la imagen no coincide con 3:4."
+  },
+  {
+    "filename": "02201149318.jpg",
+    "success": true,
+    "overall_score": 55,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 20,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 10,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "mirada_frontal_rostro_homogeneo: No cumple — el rostro está difuminado y no se pueden evaluar la mirada, orientación ni la iluminación del rostro.\nidentificable_sin_obstrucciones: No cumple — la cara está intencionalmente difuminada/obstruida, impidiendo la identificación."
+  },
+  {
+    "filename": "0281427199.jpg",
+    "success": true,
+    "overall_score": 35,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 10,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "Reglas no respetadas:\n- fondo_blanco: El fondo no es blanco ni uniforme; se aprecian paneles oscuros y paredes de distinto tono.\n- mirada_frontal_rostro_homogeneo: El rostro está difuminado y no se aprecia claramente la mirada ni una iluminación homogénea, por lo que no se puede confirmar cabeza centrada.\n- identificable_sin_obstrucciones: El rostro está intencionalmente difuminado/obstruido (además hay gafas y sombras parciales), lo que impide la identificación."
+  },
+  {
+    "filename": "0282107546.jpg",
+    "success": true,
+    "overall_score": 35,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 10,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "Reglas no respetadas:\n- fondo_blanco: El fondo no es completamente uniforme ni totalmente blanco; se aprecian sombras y textura en la pared.\n- mirada_frontal_rostro_homogeneo: No es posible confirmar mirada frontal ni iluminación homogénea porque el rostro está pixelado/borroso.\n- sin_dientes_visibles: No se puede verificar que los labios estén relajados y cerrados debido al pixelado en la zona de la boca.\n- identificable_sin_obstrucciones: El rostro está intencionalmente pixelado/borroso, lo que impide la identificación (ojos y rasgos cubiertos)."
+  },
+  {
+    "filename": "0282221705.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "tamaño_3x4: Proporción aproximada ancho:alto ≠ 3:4 (imagen ~145x225, desviación >5%).\nfondo_blanco: Fondo no es uniforme ni totalmente blanco; se ve un marco/textura en la pared.\nmirada_frontal_rostro_homogeneo: El rostro está difuminado/oculto, no se puede verificar mirada frontal ni iluminación homogénea.\nsin_dientes_visibles: Los labios/mandíbula están cubiertos por el difuminado, imposible confirmar ausencia de dientes.\nidentificable_sin_obstrucciones: El rostro está obstruido por un bloque difuminado/overlay que impide identificación."
+  },
+  {
+    "filename": "03301165372.jpg",
+    "success": true,
+    "overall_score": 25,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "Incumplimientos:\n- fondo_blanco: el fondo no es blanco ni uniforme, se aprecian tonos y texturas visibles.\n- mirada_frontal_rostro_homogeneo: la zona central del rostro está cubierta/borrosa, no se ve la cara completa ni la mirada frontal.\n- sin_dientes_visibles: la boca está oculta/borrosa, no es posible verificar que no se muestren los dientes.\n- identificable_sin_obstrucciones: existe una gran obstrucción/difuminado central que impide la identificación del sujeto."
+  },
+  {
+    "filename": "04015166700.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "tamaño_3x4: La proporción no cumple 3:4 (imagen fuera de la tolerancia requerida).\nfondo_blanco: El fondo es una puerta/armario de madera, no blanco ni uniforme.\nmirada_frontal_rostro_homogeneo: El rostro está difuminado/oculto y no puede verificarse mirada frontal ni iluminación homogénea.\nsin_dientes_visibles: La boca/rostro están difuminados, no es posible confirmar que no se muestran los dientes.\nidentificable_sin_obstrucciones: El rostro está intencionadamente difuminado/obstruido, impide identificación."
+  },
+  {
+    "filename": "06011849636.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "No cumple las reglas por las siguientes razones:\n- tamaño_3x4: la proporción de la imagen (~406x598, relación ≈0.68) está fuera del rango 3:4 con ±5%.\n- fondo_blanco: el fondo es beige/amarillento y no es blanco uniforme.\n- mirada_frontal_rostro_homogeneo: el rostro está difuminado/obstruido, no se puede verificar mirada, centrado ni iluminación homogénea.\n- sin_dientes_visibles: el difuminado impide confirmar que los dientes no sean visibles.\n- identificable_sin_obstrucciones: hay un mosaico que cubre el rostro y evita la identificación."
+  },
+  {
+    "filename": "07701149288.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "No es posible puntuar: el rostro está difuminado/oculto en la imagen, lo que impide evaluar proporción, fondo, mirada, labios/dientes y si hay obstrucciones."
+  },
+  {
+    "filename": "086827964.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "tamaño_3x4: la relación de aspecto aproximada es 0.69 (ancho:alto), fuera del rango 3:4 ±5%.\nfondo_blanco: el fondo no es blanco ni uniforme; se observan pantallas/elementos y patrones detrás.\nmirada_frontal_rostro_homogeneo: el rostro está pixelado/borroso y no totalmente visible, no puede verificarse mirada frontal ni iluminación homogénea.\nsin_dientes_visibles: la boca no es claramente visible debido al pixelado, no puede confirmarse ausencia de dientes.\nidentificable_sin_obstrucciones: el rostro está parcialmente obstruido/pixelado y hay otras personas/elementos que impiden identificación."
+  },
+  {
+    "filename": "08901160370.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "tamaño_3x4: la relación ancho:alto ≈0.65, fuera de la tolerancia ±5% respecto a 3:4.\nfondo_blanco: el fondo no es blanco ni uniforme (pared de ladrillo y vegetación desenfocada).\nmirada_frontal_rostro_homogeneo: el rostro no está claramente frontal ni totalmente visible; además la cara está pixelada, impidiendo verificar iluminación homogénea.\nsin_dientes_visibles: la pixelación del rostro impide ver la boca, no es posible confirmar que no se muestran los dientes.\nidentificable_sin_obstrucciones: el rostro está deliberadamente difuminado/pixelado (filtro/obstrucción), lo que impide la identificación."
+  },
+  {
+    "filename": "118590395.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "No es posible puntuar: el rostro está cubierto por un difuminado/obstrucción grande que impide evaluar la mirada frontal, la visibilidad de la boca/dientes y si la persona es identificable; por este motivo la evaluación completa no es fiable."
+  },
+  {
+    "filename": "131886273K.jpg",
+    "success": true,
+    "overall_score": 27,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 22,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 5,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "Incumplimientos:\n- tamaño_3x4: la imagen no tiene proporción 3:4 (aprox. 1:1/rotada), fuera de la tolerancia ±5%.\n- mirada_frontal_rostro_homogeneo: la cabeza no está centrada y parece girada/rotada; no se puede confirmar mirada frontal ni rostro totalmente visible.\n- identificable_sin_obstrucciones: el rostro está pixelado/borroso, lo que impide la identificación.\n- sin_dientes_visibles: no se puede verificar si los dientes están visibles debido al desenfoque del rostro."
+  },
+  {
+    "filename": "153145962.jpg",
+    "success": true,
+    "overall_score": 25,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "tamaño_3x4: cumple (proporción ≈3:4).\nfondo_blanco: no cumple — el fondo es una pared de ladrillo con textura y color, no blanco ni uniforme.\nmirada_frontal_rostro_homogeneo: no cumple — el rostro está difuminado y la iluminación es tenue/irregular, no se puede verificar mirada ni homogeneidad.\nsin_dientes_visibles: no cumple — la boca está borrosa, imposible confirmar que no se muestran los dientes.\nidentificable_sin_obstrucciones: no cumple — el rostro está intencionalmente difuminado/obstruido, impide la identificación."
+  },
+  {
+    "filename": "163664402.jpg",
+    "success": true,
+    "overall_score": 25,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "Reglas NO respetadas:\n- fondo_blanco: El fondo muestra vegetación y tonos verdes, no es blanco ni uniforme.\n- mirada_frontal_rostro_homogeneo: El rostro está difuminado y no se aprecian ojos ni iluminación homogénea, no se puede verificar la mirada frontal.\n- sin_dientes_visibles: La cara está obstruida por difuminado; no es posible confirmar que no se vean los dientes.\n- identificable_sin_obstrucciones: El rostro está intencionalmente oculto (difuminado), impidiendo la identificación."
+  },
+  {
+    "filename": "187828643.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "tamaño_3x4: No cumple — la proporción de la imagen (ancho/alto ≈ 0.66) está fuera de la tolerancia ±5% para 3:4.\nfondo_blanco: No cumple — el fondo no es blanco uniforme; se observan puerta/marco y un banner, además de tonos no homogéneos.\nmirada_frontal_rostro_homogeneo: No cumple — el rostro está difuminado y no se aprecia claramente la mirada frontal ni una iluminación facial homogénea.\nsin_dientes_visibles: No cumple — el difuminado del rostro impide verificar la posición de los labios y la ausencia de dientes.\nidentificable_sin_obstrucciones: No cumple — el rostro está intencionalmente difuminado (filtro) y el cabello cubre parcialmente los lados, impidiendo identificación."
+  },
+  {
+    "filename": "195993998.jpg",
+    "success": true,
+    "overall_score": 13,
+    "criteria_scores": {
+      "tamaño_3x4": 5,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 8,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "Incumplimientos:\n- tamaño_3x4: La proporción no coincide con 3:4 dentro de la tolerancia ±5% (imagen no cumple relación ancho:alto requerida).\n- fondo_blanco: El fondo muestra una ventana y edificios; no es blanco ni uniforme.\n- mirada_frontal_rostro_homogeneo: El rostro está pixelado y no hay detalle ocular ni iluminación homogénea verificable.\n- identificable_sin_obstrucciones: El rostro está intencionalmente difuminado/obstruido, impide la identificación."
+  },
+  {
+    "filename": "201644267.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "No cumple tamaño_3x4: la proporción de la imagen está fuera de la tolerancia 3:4 (no cumple ±5%).\nNo cumple fondo_blanco: el fondo es un vidrio/espacio interior con reflejos y no es blanco ni uniforme.\nNo cumple mirada_frontal_rostro_homogeneo: el rostro está difuminado y no se pueden ver ojos/posición frontal; además hay iluminación/reflejos no homogéneos.\nNo cumple sin_dientes_visibles: el área facial está oculta por difuminado, por lo que no puede verificarse que los labios estén cerrados.\nNo cumple identificable_sin_obstrucciones: el rostro está cubierto por un difuminado grande que impide la identificación (obstrucción directa)."
+  },
+  {
+    "filename": "202058345.jpg",
+    "success": true,
+    "overall_score": 15,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 5,
+      "sin_dientes_visibles": 10,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "tamaño_3x4: La proporción de la imagen no corresponde a 3:4 (orientación/relación ancho:alto incorrecta).\nfondo_blanco: Fondo exterior con césped, árboles y personas; no es blanco ni uniforme.\nmirada_frontal_rostro_homogeneo: La cabeza no está perfectamente centrada/recta y la iluminación es desigual con sombras visibles.\nidentificable_sin_obstrucciones: El rostro está difuminado y hay elementos/personas de fondo que impiden la identificación."
+  },
+  {
+    "filename": "202447977K.jpg",
+    "success": true,
+    "overall_score": 25,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "Reglas no respetadas:\n- fondo_blanco: falla — el fondo es gris claro con texto y sombras, no es blanco uniforme.\n- mirada_frontal_rostro_homogeneo: falla — el rostro está cubierto por un difuminado, no se puede verificar mirada, centrado ni iluminación homogénea.\n- sin_dientes_visibles: falla — la boca está oculta por el difuminado, imposible confirmar ausencia de dientes visibles.\n- identificable_sin_obstrucciones: falla — el rostro está obstruido por un cuadrado difuminado que impide la identificación.\nCumple: tamaño_3x4 — proporción dentro de la tolerancia (~3:4)."
+  },
+  {
+    "filename": "21913440328K.jpg",
+    "success": true,
+    "overall_score": 32,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 22,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 10,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "- tamaño_3x4: Proporción incorrecta (imagen ≈1.08 ancho/alto; debe ser ≈0.75 con ±5%).\n- mirada_frontal_rostro_homogeneo: Incumplida porque el rostro está difuminado y no se pueden verificar mirada frontal, centrado ni iluminación homogénea.\n- identificable_sin_obstrucciones: Incumplida: el rostro está obstruido/borroso, lo que impide la identificación clara de la persona."
+  },
+  {
+    "filename": "219584857.jpg",
+    "success": true,
+    "overall_score": 40,
+    "criteria_scores": {
+      "tamaño_3x4": 15,
+      "fondo_blanco": 25,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "tamaño_3x4: La proporción no es claramente 3:4 dentro de la tolerancia ±5% (encuadre/corte parecen alterar la relación). mirada_frontal_rostro_homogeneo: El rostro está difuminado y no se puede confirmar mirada frontal ni iluminación homogénea. sin_dientes_visibles: El difuminado impide verificar si los dientes están visibles. identificable_sin_obstrucciones: La cara está cubierta por un bloque difuminado que impide la identificación."
+  },
+  {
+    "filename": "220408493.jpg",
+    "success": true,
+    "overall_score": 40,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 15,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "Reglas NO respetadas: fondo_blanco: el fondo tiene un tono amarillento, no es blanco puro ni neutro uniforme. mirada_frontal_rostro_homogeneo: el rostro está obstruido por un recuadro borroso que impide evaluar la orientación y la iluminación del rostro. sin_dientes_visibles: la obstrucción/blur impide verificar si los labios están cerrados y si se muestran dientes. identificable_sin_obstrucciones: el rostro está parcialmente cubierto/borroso, lo que impide la identificación sin obstrucciones."
+  },
+  {
+    "filename": "220411435.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "Incumplimientos:\n- tamaño_3x4: La imagen está en proporción 4:3 (apaisada), no en 3:4 dentro de la tolerancia.\n- fondo_blanco: El fondo no es uniforme blanco; presenta texturas y marcas visibles (patrones y zonas grisáceas).\n- mirada_frontal_rostro_homogeneo: El rostro está cubierto por un recuadro gris que impide verificar mirada, centrado y la iluminación homogénea.\n- sin_dientes_visibles: No se puede comprobar porque la boca/parte central del rostro está obstruida.\n- identificable_sin_obstrucciones: Hay una obstrucción significativa sobre el rostro y marcas de fondo que impiden la identificación."
+  },
+  {
+    "filename": "221568680.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "No se puede puntuar: el rostro está deliberadamente difuminado/oculto, lo que impide evaluar mirada, dientes e identificabilidad; además la difuminación impide confirmar con certeza la proporción 3:4 y el color/uniformidad del fondo."
+  },
+  {
+    "filename": "221636139.jpg",
+    "success": true,
+    "overall_score": 25,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "fondo_blanco: El fondo no es blanco ni uniforme (se aprecian cielo/vegetación y variaciones de color).\nmirada_frontal_rostro_homogeneo: El rostro está difuminado/borroso, no se pueden verificar ojos, mirada ni homogeneidad de iluminación.\nsin_dientes_visibles: La boca/rostro están difuminados, no es posible confirmar que no haya dientes visibles.\nidentificable_sin_obstrucciones: El rostro está intencionalmente difuminado/obstruido, lo que impide la identificación."
+  },
+  {
+    "filename": "225923361.jpg",
+    "success": true,
+    "overall_score": 40,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 5,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 10,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "Reglas no respetadas:\n- fondo_blanco: el fondo no es blanco uniforme; presenta tono gris/azulado y no es homogéneo.\n- mirada_frontal_rostro_homogeneo: el rostro está difuminado y no se aprecia la iluminación ni los rasgos frontalmente.\n- identificable_sin_obstrucciones: el área central del rostro está obstruida por un recuadro borroso, impidiendo identificación.\nCumple:\n- tamaño_3x4: proporción aproximada aceptable.\n- sin_dientes_visibles: no se observan dientes."
+  },
+  {
+    "filename": "2273222909.jpg",
+    "success": true,
+    "overall_score": 0,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "Incumplimientos:\n- tamaño_3x4: La imagen no presenta la proporción 3:4 requerida (relación de aspecto claramente diferente). \n- fondo_blanco: El fondo es panelado/madera, no blanco uniforme ni liso. \n- mirada_frontal_rostro_homogeneo: El rostro no está totalmente visible (pixelado/blur) e impide verificar mirada centrada e iluminación homogénea. \n- sin_dientes_visibles: El pixelado del rostro impide confirmar que los labios estén relajados y cerrados. \n- identificable_sin_obstrucciones: El rostro está alterado por pixelado y además la persona está dentro de un recorte de cartón, lo que impide identificación clara."
+  },
+  {
+    "filename": "621459295.jpg",
+    "success": true,
+    "overall_score": 25,
+    "criteria_scores": {
+      "tamaño_3x4": 25,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 0,
+      "sin_dientes_visibles": 0,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "fondo_blanco: Fondo rojo con logotipos y patrones; no es blanco ni uniforme.\nmirada_frontal_rostro_homogeneo: Rostro no visible por pixelado y mano cubriendo parte; no se puede verificar mirada frontal ni iluminación homogénea.\nsin_dientes_visibles: No se puede comprobar si los dientes están visibles debido al pixelado y la mano que cubre la boca.\nidentificable_sin_obstrucciones: Rostro parcialmente cubierto por la mano y además pixelado; impide la identificación."
+  },
+  {
+    "filename": "9911628802.jpg",
+    "success": true,
+    "overall_score": 15,
+    "criteria_scores": {
+      "tamaño_3x4": 0,
+      "fondo_blanco": 0,
+      "mirada_frontal_rostro_homogeneo": 5,
+      "sin_dientes_visibles": 10,
+      "identificable_sin_obstrucciones": 0
+    },
+    "safe": false,
+    "notes": "tamaño_3x4: No cumple — la proporción ancho:alto es aproximadamente 0.66, fuera de la tolerancia ±5% para 3:4.\nfondo_blanco: No cumple — el fondo es verdoso/crema y no es uniformemente blanco.\nmirada_frontal_rostro_homogeneo: No cumple — el rostro está pixelado/borroso y no es totalmente visible, por lo que no se puede verificar mirada ni iluminación homogénea.\nidentificable_sin_obstrucciones: No cumple — la pixelación/edición del rostro obstruye la identificación."
+  }
+]
