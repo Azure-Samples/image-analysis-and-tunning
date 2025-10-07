@@ -2,10 +2,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Python File",
+            "name": "Python Debugger: Image Analysis",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}"
+            "cwd": "${workspaceFolder}\\src",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "env": {
+                "Path": "${env:Path};${workspaceFolder}\\src"
+            }
         }
     ]
 }

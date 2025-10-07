@@ -18,7 +18,11 @@ from __future__ import annotations
 
 import os
 import json
+import asyncio
+
 from typing import Optional
+
+from dotenv import load_dotenv
 
 from azure.core.exceptions import HttpResponseError
 from azure.identity.aio import DefaultAzureCredential
@@ -27,35 +31,39 @@ from azure.ai.projects.aio import AIProjectClient
 from azure.ai.agents.models import (
     MessageInputTextBlock,
     MessageImageFileParam,
-    MessageInputImageFileBlock,
+    MessageInputImageFileBlock
 )
 
-from image_analysis.schemas import (
-    ImageEvaluationRequest,
-    ImageEvaluationResponse,
-    ImageEvaluationResult,
-)
+from .schemas import ImageEvaluationRequest, ImageEvaluationResponse, ImageEvaluationResult
+from .utils import get_analysis_hook
+
+load_dotenv()
+
+HOOK = get_analysis_hook()
 
 
 RUBRIC_INSTRUCTIONS = (
-    "You are an image evaluation assistant. Follow this strict rubric and always "
-    "return only a single JSON object (no additional text) with the keys: "
-    "overall_score (integer 0-100), criteria_scores (object mapping str->int), "
-    "safe (boolean), and notes (string).\n\n"
+    "Eres un asistente de evaluación de fotografías tipo documento. Sigue este rúbrico estricto y devuelve SIEMPRE "
+    "un único objeto JSON (sin texto adicional) con las claves: "
+    "overall_score (entero 0-100), criteria_scores (objeto que mapea str->int), "
+    "safe (booleano) y notes (cadena en español).\n\n"
 
-    "Scoring rubric (for consistent, repeatable validations):\n"
-    "- composition: 0-25\n"
-    "- exposure: 0-20\n"
-    "- sharpness: 0-15\n"
-    "- relevance_to_prompt: 0-30\n"
-    "- safety: 0-10\n\n"
+    "Reglas a validar y puntuación (para validaciones consistentes y repetibles):\n"
+    "- tamaño_3x4: 0-25 — La imagen debe tener proporción 3:4 (ancho:alto ≈ 3:4, tolerancia ±5%). La imagen debe tener las axilas y los pelos proximos de la parte de arriba y abajo de la imagen.\n"
+    "- fondo_blanco: 0-25 — El fondo debe ser blanco o muy cercano a blanco, uniforme y sin patrones.\n"
+    "- mirada_frontal_rostro_homogeneo: 0-20 — La persona debe mirar al frente, cabeza centrada, rostro totalmente visible y con iluminación homogénea.\n"
+    "- sin_dientes_visibles: 0-10 — La persona no debe mostrar los dientes (labios relajados y cerrados).\n"
+    "- identificable_sin_obstrucciones: 0-20 — Nada debe impedir la identificación (sin mascarillas, gafas de sol, viseras, objetos, sombras fuertes ni filtros; gafas transparentes aceptables si no tapan los ojos).\n\n"
 
-    "Compute overall_score as the sum of the criteria above (clamp to 0-100). "
-    "Be concise in `notes` and explain the most important reasons for the score. "
-    "If you cannot score an image for any reason, return overall_score=0, "
-    "safe=false and a short note explaining why."
+    "Calcula overall_score como la suma de los criterios anteriores (limita a 0-100). "
+    "Establece safe=true solo si TODAS las reglas están cumplidas; en caso contrario, safe=false.\n\n"
+
+    "Formato de notes (en español y conciso):\n"
+    "- Si hay incumplimientos, lista cada regla NO respetada y explica por qué no se cumple (máximo 2 líneas por punto).\n"
+    "- Si todas se cumplen, indica brevemente que la foto cumple con los requisitos.\n\n"
+
+    "Si no puedes puntuar la imagen por cualquier motivo, devuelve overall_score=0, safe=false y una nota corta explicando el motivo (en español)."
 )
-
 
 async def evaluate_image(request: ImageEvaluationRequest) -> ImageEvaluationResponse:
     """Evaluate a local image using an Azure AI Foundry Agent.
@@ -102,7 +110,6 @@ async def evaluate_image(request: ImageEvaluationRequest) -> ImageEvaluationResp
     project_client = AIProjectClient(credential=credential, endpoint=endpoint)
 
     agent = None
-    created_agent = False
     image_file = None
     agents_client = None
 
@@ -125,7 +132,6 @@ async def evaluate_image(request: ImageEvaluationRequest) -> ImageEvaluationResp
                     name=agent_name,
                     instructions=RUBRIC_INSTRUCTIONS,
                 )
-                created_agent = True
 
             thread = await agents_client.threads.create()
             image_file = await agents_client.files.upload_and_poll(
@@ -136,7 +142,8 @@ async def evaluate_image(request: ImageEvaluationRequest) -> ImageEvaluationResp
 
             user_text = (
                 request.prompt
-                + "\n\nStrict output format required: return ONLY a JSON object with the keys 'overall_score', 'criteria_scores', 'safe', and 'notes'."
+                + "\n\nFormato de salida estricto: devuelve SOLO un objeto JSON con las claves 'overall_score', 'criteria_scores', 'safe' y 'notes'. "
+                + "La nota ('notes') debe estar en español. Si hay incumplimientos, lista cuáles características NO fueron respetadas y por qué."
             )
 
             content_blocks = [
@@ -154,63 +161,61 @@ async def evaluate_image(request: ImageEvaluationRequest) -> ImageEvaluationResp
                 run = await agents_client.runs.create_and_process(
                     thread_id=thread.id,
                     agent_id=agent.id,
-                    response_format="json_object",
+                    response_format="auto",
                 )
             except TypeError:
-                run = await agents_client.runs.create_and_process(thread_id=thread.id, agent_id=agent.id)
+                run = await agents_client.runs.create_and_process(
+                    thread_id=thread.id,
+                    agent_id=agent.id
+                )
 
             agent_text = None
             async for msg in agents_client.messages.list(thread_id=thread.id):
                 role_value = str(getattr(msg, "role", "")).lower()
-                if role_value == "agent" and getattr(msg, "text_messages", None):
-                    last_text = msg.text_messages[-1]
-                    agent_text = last_text.text.value
+                content = msg.content[0]
+                if "agent" in role_value and content.get("text", None):
+                    last_text = content
+                    agent_text = last_text.get('text', {}).value
 
-            if not agent_text:
-                return ImageEvaluationResponse(
-                    success=False,
-                    result=None,
-                    error="Agent did not return any text message. Raw run status: " + str(getattr(run, "status", None)),
-                )
-
-            try:
-                parsed = json.loads(agent_text.strip())
-            except Exception:
-                return ImageEvaluationResponse(success=False, result=None, error="Agent response was not valid JSON")
-
-            try:
-                overall_score = int(parsed.get("overall_score", 0))
-            except Exception:
-                overall_score = 0
-
-            criteria_scores = parsed.get("criteria_scores") or {}
-            safe = bool(parsed.get("safe", False))
-            notes = parsed.get("notes") or parsed.get("explanation") or ""
-
-            result = ImageEvaluationResult(
-                overall_score=max(0, min(100, overall_score)),
-                criteria_scores={k: int(v) for k, v in criteria_scores.items()} if isinstance(criteria_scores, dict) else {},
-                safe=safe,
-                notes=notes,
-                raw={"agent_text": agent_text, "parsed": parsed},
-                agent_id=getattr(agent, "id", None),
-                thread_id=thread.id,
-                run_status=getattr(run, "status", None),
+        if not agent_text:
+            return ImageEvaluationResponse(
+                success=False,
+                result=None,
+                error="Agent did not return any text message. Raw run status: " + str(getattr(run, "status", None)),
             )
 
-            return ImageEvaluationResponse(success=True, result=result, error=None)
+        try:
+            parsed = json.loads(agent_text.strip())
+        except Exception:
+            return ImageEvaluationResponse(success=False, result=None, error="Agent response was not valid JSON")
+
+        try:
+            overall_score = int(parsed.get("overall_score", 0))
+        except Exception:
+            overall_score = 0
+
+        criteria_scores = parsed.get("criteria_scores") or {}
+        safe = bool(parsed.get("safe", False))
+        notes = parsed.get("notes") or parsed.get("explanation") or ""
+
+        result = ImageEvaluationResult(
+            overall_score=max(0, min(100, overall_score)),
+            criteria_scores={k: int(v) for k, v in criteria_scores.items()} if isinstance(criteria_scores, dict) else {},
+            safe=safe,
+            notes=notes,
+            raw={"agent_text": agent_text, "parsed": parsed},
+            agent_id=getattr(agent, "id", None),
+            thread_id=thread.id,
+            run_status=getattr(run, "status", None),
+        )
+
+        return ImageEvaluationResponse(success=True, result=result, error=None)
 
     except HttpResponseError as e:
         return ImageEvaluationResponse(success=False, result=None, error=f"HTTP error from Azure SDK: {e.status_code} {e.message}")
     except Exception as e:
         return ImageEvaluationResponse(success=False, result=None, error=str(e))
     finally:
-        try:
-            if agents_client is not None and created_agent and agent is not None:
-                await agents_client.delete_agent(agent.id)
-        except Exception:
-            pass
-
         try:
             if agents_client is not None and image_file is not None:
                 await agents_client.files.delete(file_id=image_file.id)
@@ -238,15 +243,7 @@ def evaluate_image_simple(image_path: str, prompt: str, model_deployment_name: O
         project_endpoint=project_endpoint,
     )
     # Run the async evaluator in a fresh event loop
-    import asyncio
     return asyncio.run(evaluate_image(req))
-
-
-def _is_image_file(path: str) -> bool:
-    """Return True if file extension looks like an image."""
-    exts = {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".tiff"}
-    _, ext = os.path.splitext(path.lower())
-    return ext in exts
 
 
 def main() -> int:
@@ -280,21 +277,47 @@ def main() -> int:
         print(f"Assets directory not found: {assets_dir}")
         return 2
 
-    images = [p for p in assets_dir.iterdir() if p.is_file() and _is_image_file(p.name)]
+    images = [p for p in assets_dir.iterdir() if p.is_file() and HOOK.is_image_file(p.name)]
     if not images:
         print(f"No images found in {assets_dir}")
         return 0
 
     failures = 0
+    evaluations = []
     for img in images:
         resp = evaluate_image_simple(str(img), args.prompt)
         if resp.success and resp.result:
             r = resp.result
             notes_preview = (r.notes or "")[:120]
             print(f"{img.name}: score={r.overall_score}, safe={r.safe}, notes={notes_preview}")
+            evaluations.append({
+                "filename": img.name,
+                "success": True,
+                "overall_score": r.overall_score,
+                "criteria_scores": r.criteria_scores,
+                "safe": r.safe,
+                "notes": r.notes,
+            })
         else:
             failures += 1
             print(f"{img.name}: ERROR: {resp.error}")
+            evaluations.append({
+                "filename": img.name,
+                "success": False,
+                "overall_score": None,
+                "criteria_scores": {},
+                "safe": None,
+                "notes": resp.error,
+            })
+
+    # Persist all evaluations to evaluations.json under the assets directory
+    try:
+        out_path = assets_dir / "evaluations.json"
+        with out_path.open("w", encoding="utf-8") as f:
+            json.dump(evaluations, f, ensure_ascii=False, indent=2)
+        print(f"Saved evaluations to {out_path}")
+    except Exception as e:
+        print(f"Failed to write evaluations.json: {e}")
 
     return 1 if failures else 0
 
