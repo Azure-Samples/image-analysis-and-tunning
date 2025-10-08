@@ -2,12 +2,14 @@
 from __future__ import annotations
 
 import logging
+import os
+import threading
 import tempfile
 from io import BytesIO
 from pathlib import Path
 
 from PIL import Image, ImageOps
-from rembg import remove
+from rembg import new_session, remove
 
 LOGGER = logging.getLogger("analysis.preprocessing")
 LOGGER.setLevel(logging.INFO)
@@ -23,6 +25,33 @@ _DEFAULT_RESAMPLE = getattr(
     "LANCZOS",
     getattr(Image, "BICUBIC", getattr(Image, "NEAREST", 1)),
 )
+
+_SESSION_LOCK = threading.Lock()
+_SESSION = None
+
+
+def _get_rembg_session():
+    global _SESSION
+    if _SESSION is not None:
+        return _SESSION
+
+    with _SESSION_LOCK:
+        if _SESSION is not None:
+            return _SESSION
+
+        model_name = os.getenv("REMBG_SESSION", "u2net_human_seg")
+        try:
+            session = new_session(model_name)
+            LOGGER.info("Initialized rembg session with model '%s'", model_name)
+            _SESSION = session
+        except Exception as exc:  # pragma: no cover - don't fail pipeline if model fetch fails
+            LOGGER.warning(
+                "Failed to initialize rembg session '%s': %s. Falling back to default session.",
+                model_name,
+                exc,
+            )
+            _SESSION = None
+    return _SESSION
 
 
 def _get_resample_filter() -> int:
@@ -75,6 +104,10 @@ def preprocess_image(input_path: str) -> str:
         Path to a new temporary JPEG containing the processed image.
     """
 
+    if os.getenv("ANALYSIS_DISABLE_BACKGROUND_REMOVAL", "false").lower() in {"1", "true", "yes"}:
+        LOGGER.info("Background removal disabled via ANALYSIS_DISABLE_BACKGROUND_REMOVAL")
+        return input_path
+
     source_path = Path(input_path)
     if not source_path.exists():
         raise FileNotFoundError(f"Input image not found: {input_path}")
@@ -82,8 +115,10 @@ def preprocess_image(input_path: str) -> str:
     with source_path.open("rb") as file:
         source_bytes = file.read()
 
+    session = _get_rembg_session()
+
     try:
-        processed_output = remove(source_bytes)
+        processed_output = remove(source_bytes, session=session)
         if isinstance(processed_output, Image.Image):
             image = processed_output
         elif isinstance(processed_output, (bytes, bytearray, memoryview)):
@@ -108,8 +143,8 @@ def preprocess_image(input_path: str) -> str:
         background.paste(resized, mask=alpha)
         final_image = background.convert("RGB")
 
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg") as temp_file:
-            final_image.save(temp_file, format="JPEG", quality=JPEG_QUALITY, optimize=True)
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_file:
+            final_image.save(temp_file, format="PNG", optimize=True)
             output_path = temp_file.name
 
     LOGGER.info("Preprocessed image saved to %s (original %s)", output_path, input_path)

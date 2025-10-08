@@ -1,7 +1,9 @@
 """FastAPI application exposing the image analysis capabilities."""
 from __future__ import annotations
 
+import base64
 import os
+from pathlib import Path
 from typing import Optional
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
@@ -9,7 +11,12 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .analysis import evaluate_image
 from .api_models import ErrorResponse, HealthResponse
-from .schemas import ImageEvaluationRequest, ImageEvaluationResponse
+from .schemas import (
+    ImageEvaluationRequest,
+    ImageEvaluationResponse,
+    RenderedImageResponse,
+    RenderedImageResult,
+)
 from .preprocessing import preprocess_image
 from .utils import get_analysis_hook
 
@@ -47,6 +54,78 @@ async def healthcheck() -> HealthResponse:
     """Simple liveness probe used by orchestrators."""
 
     return HealthResponse(status="ok", detail="ready")
+
+
+@app.post(
+    "/v1/renders",
+    response_model=RenderedImageResponse,
+    responses={
+        400: {"model": ErrorResponse, "description": "Invalid request payload"},
+        413: {"model": ErrorResponse, "description": "Payload too large"},
+        422: {"description": "Validation error"},
+        500: {"model": ErrorResponse, "description": "Unexpected server error"},
+    },
+    tags=["rendering"],
+)
+async def render_endpoint(
+    image: UploadFile = File(..., description="Image to render without background"),
+) -> RenderedImageResponse:
+    """Return the background-free version of the provided image."""
+
+    if not image.filename:
+        raise HOOK.build_error_exception(
+            400,
+            code="missing_filename",
+            message="Uploaded file must include a filename",
+            action="Send a file with a descriptive filename",
+        )
+
+    temp_path = await HOOK.persist_upload_temporarily(image)
+    processed_path: Optional[str] = temp_path
+
+    try:
+        processed_path = preprocess_image(temp_path)
+        processed_file_path = Path(processed_path)
+
+        with processed_file_path.open("rb") as processed_file:
+            payload = base64.b64encode(processed_file.read()).decode("ascii")
+
+        original_stem = Path(image.filename or "image").stem or "rendered"
+        processed_suffix = processed_file_path.suffix or ".png"
+        suggested_filename = f"{original_stem}_rendered{processed_suffix}"
+        content_type = "image/png"
+        if processed_file_path.suffix.lower() != ".png":
+            content_type = image.content_type or "application/octet-stream"
+
+        return RenderedImageResponse(
+            success=True,
+            result=RenderedImageResult(
+                filename=suggested_filename,
+                content_type=content_type,
+                image_b64=payload,
+            ),
+            error=None,
+        )
+    except FileNotFoundError as exc:
+        raise HOOK.build_error_exception(
+            400,
+            code="invalid_image",
+            message="La imagen cargada no se pudo procesar",
+            details=str(exc),
+            action="Verifica que el archivo sea una fotografía válida e inténtalo de nuevo",
+        ) from exc
+    except Exception as exc:  # pragma: no cover - defensive safety net
+        raise HOOK.build_error_exception(
+            500,
+            code="rendering_failed",
+            message="Ocurrió un error al preparar la imagen",
+            details=str(exc),
+            action="Reintenta con una imagen distinta o revisa los registros del servicio",
+        ) from exc
+    finally:
+        HOOK.cleanup_temp_file(temp_path)
+        if processed_path and processed_path != temp_path:
+            HOOK.cleanup_temp_file(processed_path)
 
 
 @app.post(
