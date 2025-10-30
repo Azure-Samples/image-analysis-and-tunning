@@ -22,6 +22,7 @@ try:  # pragma: no cover - optional dependency used when contacting URLs
 except ImportError:  # pragma: no cover - degrade gracefully if missing
     requests = None  # type: ignore[assignment]
 
+
 if TYPE_CHECKING:  # pragma: no cover - type checking only
     from azure.ai.agents.models import (  # type: ignore[import-not-found]
         MessageImageFileParam,
@@ -236,12 +237,10 @@ class ImprovementHook(metaclass=_SingletonMeta):
             fixes.append("Ajustar el recorte a proporción exacta 3:4 (ancho:alto) sin deformaciones.")
         if cs.get("fondo_blanco", 0) < 25:
             fixes.append("Uniformizar el fondo a blanco puro (#FFFFFF), sin texturas ni sombras.")
-        if cs.get("mirada_frontal_rostro_homogeneo", 0) < 20:
-            fixes.append("Mirada frontal con cabeza centrada, rostro totalmente visible e iluminación homogénea.")
-        if cs.get("sin_dientes_visibles", 0) < 10:
-            fixes.append("Cerrar los labios; sin dientes visibles.")
-        if cs.get("identificable_sin_obstrucciones", 0) < 20:
-            fixes.append("Eliminar obstrucciones (mascarillas, gafas de sol, viseras, sombras fuertes u objetos).")
+        if cs.get("posicion_frontal_correcta", 0) < 25:
+            fixes.append("Lograr postura totalmente frontal: cabeza erguida y mirada directa a cámara.")
+        if cs.get("sin_accesorios_en_cabeza", 0) < 25:
+            fixes.append("Retirar accesorios en la cabeza (auriculares, gorras, sombreros, gafas oscuras, pañuelos).")
 
         if not fixes:
             notes = (item.get("notes") or "").lower()
@@ -249,12 +248,10 @@ class ImprovementHook(metaclass=_SingletonMeta):
                 fixes.append("Ajustar el recorte a proporción 3:4.")
             if "fondo" in notes and ("blanco" in notes or "no blanco" in notes):
                 fixes.append("Uniformizar el fondo a blanco puro (#FFFFFF).")
-            if any(token in notes for token in ("mirada", "frontal", "rostro")):
-                fixes.append("Mirada frontal, rostro homogéneo y centrado.")
-            if "diente" in notes:
-                fixes.append("Cerrar los labios; sin dientes visibles.")
-            if any(token in notes for token in ("obstru", "gafa de sol", "mascar")):
-                fixes.append("Eliminar obstrucciones para una identificación clara.")
+            if any(token in notes for token in ("frente", "lado", "girad", "acostad", "mirada", "frontal")):
+                fixes.append("Posicionar a la persona totalmente de frente, erguida y mirando a cámara.")
+            if any(token in notes for token in ("gorra", "sombr", "accesorio", "auricular", "gafa")):
+                fixes.append("Retirar accesorios de la cabeza y mantener rostro despejado.")
 
         if not fixes:
             fixes.append(

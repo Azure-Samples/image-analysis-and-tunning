@@ -46,23 +46,21 @@ RUBRIC_INSTRUCTIONS = (
     "Eres un asistente de evaluación de fotografías tipo documento. Sigue este rúbrico estricto y devuelve SIEMPRE "
     "un único objeto JSON (sin texto adicional) con las claves: "
     "overall_score (entero 0-100), criteria_scores (objeto que mapea str->int), "
-    "safe (booleano) y notes (cadena en español).\n\n"
+    "safe (booleano) y notes (cadena en español o portugués sencillo).\n\n"
 
-    "Reglas a validar y puntuación (para validaciones consistentes y repetibles):\n"
-    "- tamaño_3x4: 0-25 — La imagen debe tener proporción 3:4 (ancho:alto ≈ 3:4, tolerancia ±5%). La imagen debe tener las axilas y los pelos proximos de la parte de arriba y abajo de la imagen.\n"
-    "- fondo_blanco: 0-25 — El fondo debe ser blanco o muy cercano a blanco, uniforme y sin patrones.\n"
-    "- mirada_frontal_rostro_homogeneo: 0-20 — La persona debe mirar al frente, cabeza centrada, rostro totalmente visible y con iluminación homogénea.\n"
-    "- sin_dientes_visibles: 0-10 — La persona no debe mostrar los dientes (labios relajados y cerrados).\n"
-    "- identificable_sin_obstrucciones: 0-20 — Nada debe impedir la identificación (sin mascarillas, gafas de sol, viseras, objetos, sombras fuertes ni filtros; gafas transparentes aceptables si no tapan los ojos).\n\n"
+    "Reglas a validar y puntuación (usa valores consistentes entre 0 y el máximo indicado):\n"
+    "- tamaño_3x4: 0-25 — La imagen final debe respetar proporción 3:4 (ancho:alto ≈ 0.75) con tolerancia ±5% y un recorte adecuado de la cabeza y hombros.\n"
+    "- fondo_blanco: 0-25 — Debe existir un fondo completamente blanco, uniforme, sin texturas, sombras ni elementos distractores.\n"
+    "- posicion_frontal_correcta: 0-25 — La persona debe estar totalmente de frente, erguida, mirando a cámara; no puede estar de medio lado, inclinada, girada ni acostada.\n"
+    "- sin_accesorios_en_cabeza: 0-25 — No deben verse accesorios en la cabeza (auriculares, gorras, sombreros, pañuelos que cubran el cabello, gafas de sol ni objetos similares).\n\n"
 
-    "Calcula overall_score como la suma de los criterios anteriores (limita a 0-100). "
-    "Establece safe=true solo si TODAS las reglas están cumplidas; en caso contrario, safe=false.\n\n"
+    "Calcula overall_score como la suma de los cuatro criterios (limita el resultado a 0-100). "
+    "Establece safe=true solo si los cuatro criterios están plenamente cumplidos (puntuación 25 en cada uno). En cualquier otro caso, safe=false.\n\n"
 
-    "Formato de notes (en español y conciso):\n"
-    "- Si hay incumplimientos, lista cada regla NO respetada y explica por qué no se cumple (máximo 2 líneas por punto).\n"
-    "- Si todas se cumplen, indica brevemente que la foto cumple con los requisitos.\n\n"
+    "Notas: si detectas accesorios en la cabeza, postura incorrecta o ausencia de fondo blanco, indica explícitamente que la foto no cumple con los requisitos y que la persona debe subir otra imagen. "
+    "Mantén las notas concisas (máximo 2 líneas por criterio) y, si todo está correcto, indica brevemente que la foto cumple con los requisitos.\n\n"
 
-    "Si no puedes puntuar la imagen por cualquier motivo, devuelve overall_score=0, safe=false y una nota corta explicando el motivo (en español)."
+    "Si no puedes puntuar la imagen por cualquier motivo, devuelve overall_score=0, safe=false y una nota corta explicando el motivo (en español o portugués sencillo)."
 )
 
 async def evaluate_image(request: ImageEvaluationRequest) -> ImageEvaluationResponse:
@@ -267,7 +265,7 @@ def main() -> int:
         "--prompt",
         default=os.getenv(
             "EVAL_PROMPT",
-            "Evaluate this image against the rubric and provide overall_score, criteria_scores, safe, and notes.",
+            "Evalúa la imagen con base en la rúbrica (proporción 3x4, fondo blanco, postura frontal correcta y sin accesorios en la cabeza) y entrega overall_score, criteria_scores, safe y notes.",
         ),
     )
     args = parser.parse_args()

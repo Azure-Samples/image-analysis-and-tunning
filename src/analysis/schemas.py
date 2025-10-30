@@ -43,8 +43,26 @@ class ImageEvaluationResponse(BaseModel):
 	error: Optional[str] = Field(None)
 
 
+class RenderedImageResult(BaseModel):
+	"""Payload returned when an image is rendered without background."""
+
+	filename: str = Field(..., description="Suggested filename for the rendered image")
+	content_type: str = Field(..., description="MIME type of the rendered payload")
+	image_b64: str = Field(..., description="Base64-encoded representation of the rendered image")
+
+
+class RenderedImageResponse(BaseModel):
+	"""Response envelope for the rendering endpoint."""
+
+	success: bool = Field(...)
+	result: Optional[RenderedImageResult] = Field(None)
+	error: Optional[str] = Field(None)
+
+
 __all__ = [
 	"ImageEvaluationRequest",
 	"ImageEvaluationResult",
 	"ImageEvaluationResponse",
+	"RenderedImageResult",
+	"RenderedImageResponse",
 ]
